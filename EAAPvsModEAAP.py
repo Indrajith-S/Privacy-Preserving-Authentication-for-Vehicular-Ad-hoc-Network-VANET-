@@ -107,7 +107,7 @@ num_runs = 10
 
 for _ in range(num_runs):
     
-#--------------------------------------------------------USER AUTH----------------------------------------------------
+#--------------------------------------------------------AUTH 1-------------------------------------------------------
     user_input = input("\nEnter a Prime Number or type 'exit' to end: ")
     if user_input.lower() == 'exit':
         print("Thank you for your time 👋")
