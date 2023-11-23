@@ -6,6 +6,7 @@ import sys
 from easygui import passwordbox
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 from mpmath import mp
 ##It allows you to perform mathematical operations with a higher precision than the built-in float type in Python.
 ##This can be useful when working with very large or very small numbers, or when high precision is required
@@ -120,6 +121,9 @@ while True:
         sys.exit("Please Enter a Prime Number Greater than 3.")
     if not isPrime(q):
         sys.exit("Not a Prime Number")
+
+    
+    
     primitive_roots = findPrimitive(q)
 
     if len(primitive_roots) < 2:
@@ -134,69 +138,75 @@ while True:
     a= random.randint(1,q-1)
     b= random.randint(1,q-1)
     n_i= random.randint(1,q-1)
+    A1= mp.mpf(g1**a)
+    B1= g1**b
     Vi= random.randint(1,q-1)
-    alpha= random.randint(1,q-1)
-    beta= random.randint(1,q-1)
-    gamma= random.randint(1,q-1)
+    Mu= random.randint(1,q-1)
+    k1= random.randint(1,q-1)
     k1= random.randint(1,q-1)
     k2= random.randint(1,q-1)
-    Ri= random.randint(1, q-1)
-    
-    inv= (n_i+a)%q
-    inv2= (Ri+a)%q
-    while (inv==0 or inv2==0):
+    temp= (Vi+a+b)%q
+    while temp==0:
         a= random.randint(1,q-1)
-        n_i= random.randint(1,q-1)
-        Ri= random.randint(1, q-1)
-        inv= (n_i+a)%q
-        inv2= (Ri+a)%q
-        
-        
-    A1= mp.power(g1, (a+b))
-    if mp.log(A1, g1)>=q:
-        A1= mp.power(g1, (mp.log(A1, g1))%q)
-
-    B1= mp.power(g1, b)
-    #print(n_i, a)
-    DID_ui= mp.power(g1, mod_inverse(inv, q))
-    c1= ((n_i+a)*mp.power(Vi, 2))%q
-    Ti= mp.power(g1, Vi)
-    Ei= mp.power(g1, a)
-
-
-    Lambda1= mp.power(B1, (alpha+gamma))
-    if mp.log(Lambda1, g1)>=q:
-        Lambda1= mp.power(g1, (mp.log(Lambda1, g1))%q)
-
-    Lambda2= mp.power(Ti, alpha)
-    if mp.log(Lambda2, g1)>=q:
-        Lambda2= mp.power(g1, (mp.log(Lambda2, g1))%q)
-
-    Lambda3= (k1-alpha)%q
-    Lambda4= mp.power(Ti, (gamma+beta+Vi))
-    if mp.log(Lambda4, g1)>=q:
-        Lambda4= mp.power(g1, (mp.log(Lambda4, g1))%q)
-
-    Delta1= (alpha-k1)%q
-    Delta2= (k1+gamma)%q
-    Delta3= (gamma+beta)%q
-    Delta4= -k1-gamma+alpha
-
-
-    Lambda1_= mp.power(g1, (mp.log((mp.power(B1, Delta1)*mp.power(A1, Delta2)*mp.power(Ei, -Delta2)), g1))%q)
-
-    Lambda2_= mp.power(g1, (mp.log((mp.power(B1, Lambda3)*mp.power(B1, Delta1)*mp.power(Ti, (Delta4+Delta2))), g1))%q)
+        b= random.randint(1,q-1)
+        Vi= random.randint(1, q-1)
+        temp= (Vi+a+b)%q
     
-    Lambda4_= mp.power(g1, (mp.log((mp.power(Ti, Delta3)*mp.power(DID_ui, c1)), g1))%q)
+    DID_ui= mp.power(g1, (n_i+a))
+    if mp.log(DID_ui, g1)>=q:
+        DID_ui= mp.power(g1, ((mp.log(DID_ui, g1))%q))
+    
 
-    Ctemp= (Lambda1, Lambda2, Lambda4, DID_ui)
-    C_temp= (Lambda1_, Lambda2_, Lambda4_, DID_ui)
+    inverse_mod= mod_inverse(temp, q)
+    Ti= mp.power(g1, (inverse_mod))
+    Ei= mp.power(g1, (q-n_i))
 
-    C= str(hash(Ctemp))
-    C_= str(hash(C_temp))
+    Rk= random.randint(1, q-1)
+    Yk= g2**Rk
 
+    Gamma_u= mp.power(B1,Mu)
+    if mp.log(Gamma_u, g1)>=q:
+        Gamma_u= mp.power(g1,((mp.log(Gamma_u, g1))%q))
+    Gamma_v= (Ti*(A1**Mu))
+    if mp.log(Gamma_v, g1)>=q:
+        Gamma_v= mp.power(g1, ((mp.log(Gamma_v, g1))%q))
+
+    Lambda= (Mu+Rk)%q
+
+    start1= time.time()
+    
+    Lambda1= mp.power(Gamma_u,(Mu+k1))
+    if mp.log(Lambda1, g1)>=q:
+        Lambda1= mp.power(g1,((mp.log(Lambda1, g1))%q))
+
+    Lambda2temp1= mp.log(mp.power(mp.mpf(Gamma_u), (Mu+k1)), g1)
+    Lambda2temp2= mp.log(mp.power(mp.mpf(Gamma_v), (Mu+k2)), g1)
+    Lambda2= mp.power(g1, ((Lambda2temp1-Lambda2temp2)%q))
+
+
+    Delta1= (Rk-k1)%q
+    Delta2= (Rk-k2)%q
+    Ni= Ei*DID_ui
+    if mp.log(Ni, g1)>=q:
+        Ni= mp.power(g1, ((mp.log(Ni, g1))%q))
+
+    #sig= mp.power(g1, (1/(Rk+H_m)))
+
+
+    Lambda1_temp1= mp.log(mp.power(mp.mpf(Gamma_u), Lambda), g1)
+    Lambda1_temp2= mp.log(mp.power(mp.mpf(Gamma_u), Delta1), g1)
+    Lambda1_= mp.power(g1, ((Lambda1_temp1-Lambda1_temp2)%q))
+
+    Lambda2_temp1_= mp.log(mp.power(mp.mpf(Gamma_u), Lambda)*mp.power(mp.mpf(Gamma_v), Delta2), g1)
+    Lambda2_temp2_= mp.log(mp.power(mp.mpf(Gamma_u), Delta1)*mp.power(mp.mpf(Gamma_v), Lambda), g1)
+
+    Lambda2_= mp.power(g1, ((Lambda2_temp1_-Lambda2_temp2_)%q))
+
+    end1= time.time()
+    el1= end1-start1
+    
     bool1= False
-    if (Lambda1==Lambda1_) and (Lambda2==Lambda2_) and (Lambda4==Lambda4_) and (C==C_):
+    if (Lambda1==Lambda1_) and (Lambda2==Lambda2_) and (Ni==A1):
         bool1= True
     else:
         print("Try Again")
@@ -204,33 +214,59 @@ while True:
 
 #------------------------------------------------------RSU AUTH-------------------------------------------------------
 
-    Phi1= random.randint(1, q-1)
-    Phi2= random.randint(1, q-1)
-    Phi3= random.randint(1, q-1)
-
-    Li= mp.power(g1, (mp.log(mp.power(B1, Ri), g1))%q)
-    f1= ((Ri+a)*b)%q
-    DID_rsu= mp.power(g1, mod_inverse(inv2, q))
-
-    h1= mp.power(g1, (mp.log(mp.power(g1, (b*(Phi1+Phi3))%q), g1))%q)
-    h2= mp.power(g1, (mp.log(mp.power(DID_rsu, Phi3*f1), g1))%q)
-
-    x1= (Phi1-Phi2)%q
-    x2= (Phi2+Phi3)%q
-    x3= (-Phi1+Phi2+Phi3)%q
-
-    h1_= mp.power(g1, (mp.log(mp.power(B1, x1+x2), g1))%q)
-    h2_= mp.power(g1, (mp.log(mp.power(B1, x1+x3), g1))%q)
+    Ri= random.randint(1, q-1)
+    Li= mp.power(B1, Ri)
+    Omega= random.randint(1, q-1)
+    Phi_1= random.randint(1, q-1)
+    Phi_2= random.randint(1, q-1)
     
-    Ctemp2= (h1, h2, Li, DID_rsu)
-    C_temp2= (h1_, h2_, Li, DID_rsu)
+    Theta_u= mp.power(A1, Phi_1)*mp.power(g1, Omega)
+    if mp.log(Theta_u, g1)>=q:
+        Theta_u= mp.power(g1, ((mp.log(Theta_u, g1))%q))
 
-    C2= str(hash(Ctemp2))
-    C2_= str(hash(C_temp2))
+    Theta_v= Li*mp.power(A1, Phi_2)
+    if mp.log(Theta_v, g1)>=q:
+        Theta_v= mp.power(g1, ((mp.log(Theta_v, g1))%q))
 
+    h= (Omega+Phi_1)%q
+
+    start2= time.time()
+    
+    h1= mp.power(Theta_v, (Phi_1+Phi_2))
+    if mp.log(h1, g1)>=q:
+        h1= mp.power(g1, ((mp.log(h1, g1))%q))
+
+    h2temp= mp.log(mp.power(mp.mpf(Theta_v), (Phi_2-Phi_1)), g1)
+    h2= mp.power(mp.mpf(Theta_u), Phi_1)*mp.power(g1, (h2temp%q))
+    if mp.log(h2, g1)>=q:
+        h2= mp.power(g1, ((mp.log(h2, g1))%q))        
+
+    H_alpha_temp1= mp.log(mp.power(mp.mpf(Theta_v), h), g1)
+    H_alpha_temp2= mp.log(mp.power(mp.mpf(Theta_v), Omega), g1)
+    H_alpha= mp.power(g1, (H_alpha_temp1-H_alpha_temp2)%q)
+
+    H_beta= mp.power(Theta_v, Phi_2)
+    if mp.log(H_beta, g1)>=q:
+        H_beta= mp.power(g1, ((mp.log(H_beta, g1))%q))
+
+    H_gamma= mp.power(Theta_u, Phi_1)
+    if mp.log(H_gamma, g1)>=q:
+        H_gamma= mp.power(g1, ((mp.log(H_gamma, g1))%q))
+
+    H1_= H_alpha*H_beta
+    if mp.log(H1_, g1)>=q:
+        H1_= mp.power(g1, ((mp.log(H1_, g1))%q))
+
+    H2_temp1= mp.log((H_beta*H_gamma), g1)
+    H2_temp2= mp.log(H_alpha, g1)
+
+    H2_= mp.power(g1, ((H2_temp1-H2_temp2)%q))
+
+    end2= time.time()
+    el2= end2-start2
     
     bool2= False
-    if (h1_==h1) and (h2_==h2) and (C2==C2_):
+    if (H1_==h1) and (H2_==h2):
         bool2= True
     else:
         print("Try Again")
@@ -239,16 +275,14 @@ while True:
 #---------------------------------------------------------------------------------------------------------------------
 
     print("\n------------------------------------------------USER AUTHENTICATION-----------------------------------------------")
-    print("Lambda 1: ", Lambda1,"and Lambda 1`: ", Lambda1_,"\nLambda 2: ", Lambda2,"and Lambda 2`: ", Lambda2_
-              ,"\nLambda 4: ", Lambda4,"and Lambda 4`: ", Lambda4_)
-    print("Challenger: ",C," Challenger`: ",C_)
+    print("Lambda 1: ", Lambda1,"and Lambda 1`: ", Lambda1_,"\nLambda 2: ", Lambda2,"and Lambda 2`: ", Lambda2_)
+    print("Ni: ",Ni," and A1: ",A1)
     if bool1:
         print("\nUser Successfully Authenticated")
     print("------------------------------------------------------------------------------------------------------------------")
     print("\n------------------------------------------------RSU AUTHENTICATION------------------------------------------------")       
-    print("H1: ",h1," H1`: ",h1_)
-    print("H2: ",h2," H2`: ",h2_)
-    print("Challenger: ",C2," Challenger`: ",C2_)
+    print("H1: ",h1," H1`: ",H1_)
+    print("H2: ",h2," H2`: ",H2_)
     if bool2:
         print("\nRSU Successfully Authenticated")
     print("------------------------------------------------------------------------------------------------------------------")        
@@ -262,7 +296,7 @@ while True:
 #---------------------------------------------------------------------------------------------------------------------
 
 
-
+    elapsed= el1+el2
 
     password= passwordbox("Enter Password to Reveal Variables: ")
     if password=="l":
@@ -272,38 +306,32 @@ while True:
         print("a: ",a)
         print("b: ",b)
         print("n_i: ",n_i)
+        print("Mu: ",Mu)
         print("k1: ",k1)
         print("k2: ",k2)
         print("Vi: ",Vi)
+        print("Rk: ",Rk)
         print("Ri: ",Ri)
-        print("Alpha: ",alpha)
-        print("Beta: ",beta)
-        print("Gamma: ",gamma)
-        print("Phi_1: ",Phi1)
-        print("Phi_2: ",Phi2)
-        print("Phi_3: ",Phi3)
+        print("Omega: ",Omega)
+        print("Phi_1: ",Phi_1)
+        print("Phi_2: ",Phi_2)
         print("------------------------------------------------------------------------------------------------------------------")
 
         print("\n------------------------------------------------------------------------------------------------------------------")
         print("Computed Values: \n")
         print("Primitive Roots: ", g1, g2)
-        print("A1: ",A1)
-        print("B1: ",B1)
-        print("c1: ",c1)
+        print("Primitive Roots: ", g1, g2)
         print("Ei: ",Ei)
-        print("Li: ",Li)
-        print("Ti: ",Ti)
-        print("f1: ",f1)
-        print("x1: ",x1)
-        print("x2: ",x2)
-        print("x3: ",x3)
         print("DID_ui: ",DID_ui)
-        print("DID_rsu: ",DID_rsu)
-        print("Delta 1: ",Delta1)
-        print("Delta 2: ",Delta2)
-        print("Delta 3: ",Delta3)
-        print("Delta 4: ",Delta4)
-
+        print("Gamma_u: ",Gamma_u," Gamma_v: ",Gamma_v)
+        print("Lambda: ",Lambda)
+        print("Delta 1: ",Delta1," Delta 2: ",Delta2)
+        print("Theta_u: ",Theta_u," Theta_v: ",Theta_v)
+        print("h: ",h)
+        print("H_alpha: ",H_alpha)
+        print("H_beta: ",H_beta)
+        print("H_gamma: ",H_gamma)
+        print("Elapsed Time: ",elapsed)
         print("==================================================================================================================")
 
 

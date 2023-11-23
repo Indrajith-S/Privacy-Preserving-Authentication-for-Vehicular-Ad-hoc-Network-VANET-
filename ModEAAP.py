@@ -6,6 +6,7 @@ import sys
 from easygui import passwordbox
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 from mpmath import mp
 ##It allows you to perform mathematical operations with a higher precision than the built-in float type in Python.
 ##This can be useful when working with very large or very small numbers, or when high precision is required
@@ -106,7 +107,7 @@ def mod_inverse(a, m):
 #--------------------------------------------------------USER AUTH----------------------------------------------------
 
 while True:
-    user_input = input("\nEnter a value or type 'exit' to end: ")
+    user_input = input("\nEnter a Prime Number or type 'exit' to end: ")
     if user_input.lower() == 'exit':
         print("Thank you for your time 👋")
         break
@@ -120,6 +121,8 @@ while True:
         sys.exit("Please Enter a Prime Number Greater than 3.")
     if not isPrime(q):
         sys.exit("Not a Prime Number")
+
+    
     primitive_roots = findPrimitive(q)
 
     if len(primitive_roots) < 2:
@@ -163,7 +166,8 @@ while True:
     Ti= mp.power(g1, Vi)
     Ei= mp.power(g1, a)
 
-
+    start1= time.time()
+    
     Lambda1= mp.power(B1, (alpha+gamma))
     if mp.log(Lambda1, g1)>=q:
         Lambda1= mp.power(g1, (mp.log(Lambda1, g1))%q)
@@ -195,12 +199,17 @@ while True:
     C= str(hash(Ctemp))
     C_= str(hash(C_temp))
 
+    end1= time.time()
+
+    el1= end1-start1
+    
     bool1= False
     if (Lambda1==Lambda1_) and (Lambda2==Lambda2_) and (Lambda4==Lambda4_) and (C==C_):
         bool1= True
     else:
         print("Try Again")
 
+    
 #------------------------------------------------------RSU AUTH-------------------------------------------------------
 
     Phi1= random.randint(1, q-1)
@@ -210,6 +219,8 @@ while True:
     Li= mp.power(g1, (mp.log(mp.power(B1, Ri), g1))%q)
     f1= ((Ri+a)*b)%q
     DID_rsu= mp.power(g1, mod_inverse(inv2, q))
+
+    start2= time.time()
 
     h1= mp.power(g1, (mp.log(mp.power(g1, (b*(Phi1+Phi3))%q), g1))%q)
     h2= mp.power(g1, (mp.log(mp.power(DID_rsu, Phi3*f1), g1))%q)
@@ -227,6 +238,8 @@ while True:
     C2= str(hash(Ctemp2))
     C2_= str(hash(C_temp2))
 
+    end2= time.time()
+    el2= end2-start2
     
     bool2= False
     if (h1_==h1) and (h2_==h2) and (C2==C2_):
@@ -234,29 +247,34 @@ while True:
     else:
         print("Try Again")
 
+
 #---------------------------------------------------------------------------------------------------------------------
 
-    print("------------------------------------------------USER AUTHENTICATION-----------------------------------------------")
+    print("\n------------------------------------------------USER AUTHENTICATION-----------------------------------------------")
     print("Lambda 1: ", Lambda1,"and Lambda 1`: ", Lambda1_,"\nLambda 2: ", Lambda2,"and Lambda 2`: ", Lambda2_
               ,"\nLambda 4: ", Lambda4,"and Lambda 4`: ", Lambda4_)
     print("Challenger: ",C," Challenger`: ",C_)
+    if bool1:
+        print("\nUser Successfully Authenticated")
     print("------------------------------------------------------------------------------------------------------------------")
     print("\n------------------------------------------------RSU AUTHENTICATION------------------------------------------------")       
     print("H1: ",h1," H1`: ",h1_)
     print("H2: ",h2," H2`: ",h2_)
     print("Challenger: ",C2," Challenger`: ",C2_)
+    if bool2:
+        print("\nRSU Successfully Authenticated")
     print("------------------------------------------------------------------------------------------------------------------")        
 
 
 #---------------------------------------------------------------------------------------------------------------------      
 
     if bool1 and bool2:
-        print("\nPrivacy Preserving Authentication Successfully Completed!\n")
+        print("\nPrivacy Preserving Authentication Successfully Completed!")
 
 #---------------------------------------------------------------------------------------------------------------------
 
 
-
+    elapsed= el1+el2
 
     password= passwordbox("Enter Password to Reveal Variables: ")
     if password=="l":
@@ -297,7 +315,7 @@ while True:
         print("Delta 2: ",Delta2)
         print("Delta 3: ",Delta3)
         print("Delta 4: ",Delta4)
-
+        print("Elapsed Time: ",elapsed)
         print("==================================================================================================================")
 
 
@@ -419,18 +437,5 @@ while True:
         plt.show()
 
     plot_line_graph(users)
-
-
-
-
-
-
-
-
-    
-
-
-
-
 
     
