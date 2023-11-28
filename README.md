@@ -36,4 +36,9 @@ Results
 The system outputs the results of user and RSU authentication, providing details such as Lambda values, challengers, and authentication success/failure messages.
 
 ## Contributing
+
 Feel free to contribute to the project by opening issues or submitting pull requests. Your feedback and contributions are highly appreciated.
+
+## Connect with Me
+
+Let's connect and continue our cybersecurity learning journey together! Feel free to connect with me on LinkedIn: https://www.linkedin.com/in/indrajithsb/
